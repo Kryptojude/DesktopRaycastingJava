@@ -33,17 +33,17 @@ class Controls extends KeyAdapter
 	public void keyPressed(KeyEvent event) 
 	{
         int keyCode = event.getKeyCode();
-        if (keyCode == event.VK_LEFT)
+        if (keyCode == KeyEvent.VK_LEFT)
         	Move(window.playerDegrees - 90);
-        else if (keyCode == event.VK_RIGHT)
+        else if (keyCode == KeyEvent.VK_RIGHT)
         	Move(window.playerDegrees + 90);
-        else if (keyCode == event.VK_UP)
+        else if (keyCode == KeyEvent.VK_UP)
         	Move(window.playerDegrees);
-        else if (keyCode == event.VK_DOWN)
+        else if (keyCode == KeyEvent.VK_DOWN)
         	Move(window.playerDegrees - 180);
-        else if (keyCode == event.VK_A)
+        else if (keyCode == KeyEvent.VK_A)
         	window.playerDegrees -= turnSpeed;
-        else if (keyCode == event.VK_D)
+        else if (keyCode == KeyEvent.VK_D)
         	window.playerDegrees += turnSpeed;
     }
 	
