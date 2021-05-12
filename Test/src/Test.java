@@ -1,7 +1,5 @@
 import java.awt.*;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import javax.swing.*;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,18 +34,40 @@ class Controls extends KeyAdapter
 	{
         int keyCode = event.getKeyCode();
         if (keyCode == event.VK_LEFT)
-        	window.playerX-=movementSpeed;
+        	Move(window.playerDegrees - 90);
         else if (keyCode == event.VK_RIGHT)
-        	window.playerX+=movementSpeed;
+        	Move(window.playerDegrees + 90);
         else if (keyCode == event.VK_UP)
-        	window.playerY-=movementSpeed;
+        	Move(window.playerDegrees);
         else if (keyCode == event.VK_DOWN)
-        	window.playerY+=movementSpeed;
+        	Move(window.playerDegrees - 180);
         else if (keyCode == event.VK_A)
-        	window.playerDegrees-=turnSpeed;
+        	window.playerDegrees -= turnSpeed;
         else if (keyCode == event.VK_D)
-        	window.playerDegrees+=turnSpeed;
+        	window.playerDegrees += turnSpeed;
     }
+	
+	void Move(double movementDegrees)
+	{
+		// Save old Position
+		Point2D.Double oldPosition = new Point2D.Double(window.playerX, window.playerY);
+		// Degrees to Radians
+        double movementRadians = movementDegrees/180 * Math.PI;
+        // Get unit vector
+        double movementX = Math.cos(movementRadians);
+        double movementY = Math.sin(movementRadians);
+        // Move
+        window.playerX += movementX * movementSpeed;
+        window.playerY += movementY * movementSpeed;
+        
+        // Collision check
+        if (window.map[(int)window.playerY][(int)window.playerX] == 1)
+        {
+        	// Restore old Position
+        	window.playerX = oldPosition.x;
+        	window.playerY = oldPosition.y;
+        }
+	}
 }
 
 /*This class is instantiated once in the Timer constructor, 
@@ -109,12 +129,14 @@ class Window extends JFrame
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(dim);
 		setUndecorated(true);
-		setBackground(new Color(0, 0, 0, 0));		
+		setBackground(new Color(0, 45, 0, 0));		
 		setVisible(true);
+		this.setAlwaysOnTop(true);
 	}
 	
 	public void paint(Graphics g)
 	{
+		super.paint(g);
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setStroke(new BasicStroke(1));
 
@@ -148,10 +170,12 @@ class Window extends JFrame
 			{
 				// Determine color based on rayLength
 				int colorByte = (int)(255 * rayLength/drawDistance);
-				Color color = new Color(colorByte, colorByte, colorByte);
+				Color color = new Color(0, colorByte, 0);
 				g2d.setColor(color);
+				// Determine column height based on rayLength
+				int columnHeight = (int)(dim.height/3 + (dim.height * 0.66) * (1 - (rayLength/drawDistance)));
 				// Draw vertical column based on rayLength
-				g2d.drawRect(rayNumber, dim.height/3, 1, dim.height/3);
+				g2d.drawRect(rayNumber, dim.height/2 - columnHeight/2, 1, columnHeight);
 			}
 		}
 		
